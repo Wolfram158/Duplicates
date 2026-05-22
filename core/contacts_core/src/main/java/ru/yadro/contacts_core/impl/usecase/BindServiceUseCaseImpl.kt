@@ -13,5 +13,5 @@ import ru.yadro.contacts_core.di.ContactsCoreScope
 internal class BindServiceUseCaseImpl(
     private val repository: DeleteDuplicatesRepository
 ) : BindServiceUseCase {
-    override fun invoke() = repository.bindService()
+    override operator fun invoke() = repository.bindService()
 }

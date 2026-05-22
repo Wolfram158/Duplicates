@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    kotlin("plugin.serialization") version "2.3.20"
 }
 
 android {
@@ -43,6 +44,10 @@ dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:di"))
     implementation(project(":feature:contacts_list"))
+
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.navigation.runtime.ktx)
+    implementation(libs.androidx.navigation.common.ktx)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

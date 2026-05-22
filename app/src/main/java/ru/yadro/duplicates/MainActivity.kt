@@ -15,10 +15,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
+import androidx.navigation.compose.rememberNavController
 import ru.yadro.common.getAppComponent
 import ru.yadro.common.ui.LocalAppComponent
 import ru.yadro.common.ui.theme.DuplicatesTheme
-import ru.yadro.contacts_list.ui.ContactsListScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,7 +37,8 @@ class MainActivity : ComponentActivity() {
                     )
                 } else {
                     CompositionLocalProvider(LocalAppComponent provides getAppComponent()) {
-                        ContactsListScreen()
+                        val navHostController = rememberNavController()
+                        NavGraph(navHostController)
                     }
                 }
             }

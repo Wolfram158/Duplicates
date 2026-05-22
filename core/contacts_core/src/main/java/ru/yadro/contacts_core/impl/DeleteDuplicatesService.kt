@@ -22,9 +22,10 @@ internal class DeleteDuplicatesService : Service() {
                     val duplicates = contacts.getDuplicates()
                     if (duplicates.isEmpty()) {
                         DeleteDuplicatesResult.NO_DUPLICATES
+                    } else {
+                        applicationContext.contentResolver.deleteDuplicates(duplicates)
+                        DeleteDuplicatesResult.DELETED
                     }
-                    applicationContext.contentResolver.deleteDuplicates(duplicates)
-                    DeleteDuplicatesResult.DELETED
                 } catch (_: Exception) {
                     DeleteDuplicatesResult.ERROR
                 }

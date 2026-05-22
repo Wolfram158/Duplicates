@@ -27,6 +27,12 @@ android {
             )
         }
     }
+    testOptions {
+        unitTests.all {
+            it.useJUnitPlatform()
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -44,6 +50,11 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     testImplementation(libs.junit)
+    testRuntimeOnly(libs.junit.platform.launcher)
+    testImplementation(libs.junit.jupiter)
+    testImplementation(libs.junit.jupiter.api)
+    testImplementation(libs.kotlin.test)
+    testImplementation(libs.junit.jupiter.params)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }

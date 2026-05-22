@@ -2,9 +2,9 @@ package ru.yadro.contacts_list.ui
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -13,7 +13,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import ru.yadro.common.ui.Loading
 import ru.yadro.common.ui.LocalAppComponent
 import ru.yadro.contacts_list.di.createContactsListGraph
-import ru.yadro.contacts_list.domain.api.model.ContactOrLetter
 
 @Composable
 fun ContactsListScreen(
@@ -24,32 +23,35 @@ fun ContactsListScreen(
     val viewModelFactory = remember(graph) { graph.contactsListViewModelFactory }
     val viewModel = viewModel<ContactsListViewModel>(factory = viewModelFactory)
     val contacts = viewModel.contacts.collectAsStateWithLifecycle()
+    val snackbar = remember { SnackbarHostState() }
+
+    ObserveEvents(
+        events = viewModel.events,
+        snackbar = snackbar
+    )
 
     Scaffold(
         modifier = modifier
-            .fillMaxSize()
+            .fillMaxSize(),
+        snackbarHost = {
+            SnackbarHost(snackbar)
+        }
     ) { paddingValues ->
         when (val contacts = contacts.value) {
             ContactsListState.Empty ->
-                EmptyContactsList()
+                EmptyContactsList(Modifier.padding(paddingValues))
 
             ContactsListState.Loading ->
-                Loading()
+                Loading(Modifier.padding(paddingValues))
 
-            is ContactsListState.NonEmpty -> {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues)
-                ) {
-                    items(contacts.contacts, key = { it.key }) { item ->
-                        when (item) {
-                            is ContactOrLetter.Contact -> ContactItem(item)
-                            is ContactOrLetter.Letter -> LetterItem(item)
-                        }
-                    }
-                }
-            }
+            is ContactsListState.NonEmpty ->
+                NonEmptyContactsList(
+                    contacts = contacts.contacts,
+                    onDeleteDuplicateContacts = {
+                        viewModel.dispatch(ContactsListIntent.DeleteDuplicates)
+                    },
+                    modifier = Modifier.padding(paddingValues)
+                )
         }
     }
 }

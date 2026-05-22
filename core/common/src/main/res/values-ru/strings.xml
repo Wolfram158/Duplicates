@@ -2,4 +2,8 @@
 <resources>
     <string name="no_main_phone_number">No main phone number</string>
     <string name="contacts_list_is_empty">Список контактов пуст</string>
+    <string name="delete_duplicate_contacts">Удалить одинаковые контакты</string>
+    <string name="duplicates_were_deleted">Одинаковые контакты удалены</string>
+    <string name="duplicates_not_found">Одинаковые контакты не обнаружены</string>
+    <string name="error_when_deleting_duplicates">Произошла ошибка при удалении одинаковых контактов</string>
 </resources>

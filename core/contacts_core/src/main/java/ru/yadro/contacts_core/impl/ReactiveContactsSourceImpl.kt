@@ -24,7 +24,7 @@ internal class ReactiveContactsSourceImpl(
 ) : ReactiveContactsSource {
     override fun getContactsFlow(): Flow<List<Contact>> = context
         .contentResolver
-        .register(ContactsContract.Contacts.CONTENT_URI)
+        .register(ContactsContract.Data.CONTENT_URI)
         .onStart {
             emit(false)
         }

@@ -2,4 +2,8 @@
 <resources>
     <string name="no_main_phone_number">No main phone number</string>
     <string name="contacts_list_is_empty">Contacts list is empty</string>
+    <string name="delete_duplicate_contacts">Delete duplicate contacts</string>
+    <string name="duplicates_were_deleted">Duplicates were deleted</string>
+    <string name="duplicates_not_found">Duplicates not found</string>
+    <string name="error_when_deleting_duplicates">Error occurred when deleting duplicates</string>
 </resources>

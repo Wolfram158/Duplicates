@@ -8,10 +8,14 @@ import android.os.IBinder
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
+import kotlinx.coroutines.suspendCancellableCoroutine
+import ru.yadro.contacts_core.IDeleteDuplicatesCallback
 import ru.yadro.contacts_core.IDeleteDuplicatesInterface
 import ru.yadro.contacts_core.api.DeleteDuplicatesRepository
 import ru.yadro.contacts_core.api.DeleteDuplicatesResult
 import ru.yadro.contacts_core.di.ContactsCoreScope
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 import ru.yadro.contacts_core.DeleteDuplicatesResult as DeleteDuplicatesResultAidl
 
 @SingleIn(ContactsCoreScope::class)
@@ -37,18 +41,26 @@ internal class DeleteDuplicatesRepositoryImpl(
 
     }
 
-    override fun deleteDuplicates(): DeleteDuplicatesResult {
-        return try {
-            service?.run {
-                when (deleteDuplicates()) {
-                    DeleteDuplicatesResultAidl.NO_DUPLICATES -> DeleteDuplicatesResult.NoDuplicates
-                    DeleteDuplicatesResultAidl.DELETED -> DeleteDuplicatesResult.Deleted
-                    DeleteDuplicatesResultAidl.ERROR -> DeleteDuplicatesResult.Error
-                    else -> throw RuntimeException("Invariant violation: only three types can be returned by service")
-                }
-            } ?: DeleteDuplicatesResult.Error
-        } catch (_: Exception) {
-            DeleteDuplicatesResult.Error
+    override suspend fun deleteDuplicates(): DeleteDuplicatesResult {
+        return suspendCancellableCoroutine { cont ->
+            runCatching {
+                service?.run {
+                    deleteDuplicates(object : IDeleteDuplicatesCallback.Stub() {
+                        override fun onResult(result: Byte) {
+                            cont.resume(
+                                when (result) {
+                                    DeleteDuplicatesResultAidl.NO_DUPLICATES -> DeleteDuplicatesResult.NoDuplicates
+                                    DeleteDuplicatesResultAidl.DELETED -> DeleteDuplicatesResult.Deleted
+                                    DeleteDuplicatesResultAidl.ERROR -> DeleteDuplicatesResult.Error
+                                    else -> throw RuntimeException("Invariant violation: only three types can be returned by service")
+                                }
+                            )
+                        }
+                    })
+                } ?: cont.resume(DeleteDuplicatesResult.Error)
+            }.onFailure {
+                cont.resumeWithException(it)
+            }
         }
     }
 

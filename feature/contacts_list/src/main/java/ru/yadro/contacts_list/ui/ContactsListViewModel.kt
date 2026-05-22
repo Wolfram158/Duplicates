@@ -20,7 +20,7 @@ internal class ContactsListViewModel(
     private val deleteDuplicatesUseCase: DeleteDuplicatesUseCase,
     bindServiceUseCase: BindServiceUseCase,
     private val unbindServiceUseCase: UnbindServiceUseCase,
-    private val ioDispatcher: CoroutineDispatcher,
+    private val defaultDispatcher: CoroutineDispatcher,
 ) : ViewModel(), ContactsListIntentDispatcher {
     val contacts = getContactsFlowUseCase()
         .map {
@@ -42,10 +42,9 @@ internal class ContactsListViewModel(
     }
 
     private fun handleDeleteDuplicates() {
-        viewModelScope.launch(ioDispatcher) {
+        viewModelScope.launch(defaultDispatcher) {
             _events.send(
-                when (
-                    deleteDuplicatesUseCase()) {
+                when (deleteDuplicatesUseCase()) {
                     DeleteDuplicatesResult.Deleted -> ContactsListScreenEvent.Deleted
                     DeleteDuplicatesResult.Error -> ContactsListScreenEvent.Error
                     DeleteDuplicatesResult.NoDuplicates -> ContactsListScreenEvent.NoDuplicates

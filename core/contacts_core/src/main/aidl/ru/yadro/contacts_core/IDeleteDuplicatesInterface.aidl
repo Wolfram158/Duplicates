@@ -2,7 +2,8 @@
 package ru.yadro.contacts_core;
 
 import ru.yadro.contacts_core.DeleteDuplicatesResult;
+import ru.yadro.contacts_core.IDeleteDuplicatesCallback;
 
 interface IDeleteDuplicatesInterface {
-    DeleteDuplicatesResult deleteDuplicates();
+    void deleteDuplicates(IDeleteDuplicatesCallback callback);
 }

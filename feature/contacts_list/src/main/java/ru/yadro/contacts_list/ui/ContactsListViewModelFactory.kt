@@ -20,7 +20,7 @@ internal class ContactsListViewModelFactory(
     private val deleteDuplicatesUseCase: DeleteDuplicatesUseCase,
     private val bindServiceUseCase: BindServiceUseCase,
     private val unbindServiceUseCase: UnbindServiceUseCase,
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (!modelClass.isAssignableFrom(ContactsListViewModel::class.java)) {
@@ -31,7 +31,7 @@ internal class ContactsListViewModelFactory(
             deleteDuplicatesUseCase = deleteDuplicatesUseCase,
             bindServiceUseCase = bindServiceUseCase,
             unbindServiceUseCase = unbindServiceUseCase,
-            ioDispatcher = ioDispatcher
+            defaultDispatcher = defaultDispatcher
         ) as T
     }
 }

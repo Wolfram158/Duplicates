@@ -7,7 +7,7 @@ sealed interface DeleteDuplicatesResult {
 }
 
 interface DeleteDuplicatesRepository {
-    fun deleteDuplicates(): DeleteDuplicatesResult
+    suspend fun deleteDuplicates(): DeleteDuplicatesResult
 
     fun bindService()
 
